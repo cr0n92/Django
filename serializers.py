@@ -49,37 +49,10 @@ class RegisterSerializer1(serializers.ModelSerializer):
 
 
 class RegisterSerializer2(serializers.ModelSerializer):
-    #user_id = serializers.SerializerMethodField('is_named_bar')
 
     class Meta:
         model = UserProfile
-        fields = ('userPhone','user')
-
-# class RegisterSerializer2(serializers.Serializer):
-#     user = models.OneToOneField(User,on_delete=models.CASCADE)
-#     userPhone = models.CharField(primary_key=True, max_length=10)
-#     birthDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
-#     userAddress = models.CharField(max_length=100, default='')
-    
-
-#     def create(self, validated_data):
-#         """
-#         Create and return a new `Snippet` instance, given the validated data.
-#         """
-#         return Snippet.objects.create(**validated_data)
-
-#     def update(self, instance, validated_data):
-#         """
-#         Update and return an existing `Snippet` instance, given the validated data.
-#         """
-#         instance.title = validated_data.get('title', instance.title)
-#         instance.code = validated_data.get('code', instance.code)
-#         instance.linenos = validated_data.get('linenos', instance.linenos)
-#         instance.language = validated_data.get('language', instance.language)
-#         instance.style = validated_data.get('style', instance.style)
-#         instance.save()
-#         return instance
-    
+        fields = ('user', 'userPhone', 'birthDate', 'userAddress', 'sex')
 
 
 class DonationSerializer(serializers.ModelSerializer):

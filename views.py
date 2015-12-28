@@ -31,7 +31,7 @@ def user_register(request):
             n1['user'] = a.id
             serializer = RegisterSerializer2(data=n1)
             if serializer.is_valid():
-                b=serializer.save()
+                serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 a.delete()

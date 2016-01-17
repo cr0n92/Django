@@ -61,3 +61,10 @@ class DonationSerializer(serializers.ModelSerializer):
         model = Donation
         fields = ('donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
                 'donationBarcode', 'deliveryType', 'deliveryDate')
+
+
+class MedInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MedInfo
+        fields = ('med_name', 'med_subs', 'med_price')

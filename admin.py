@@ -21,9 +21,13 @@ class DonationAdmin(admin.ModelAdmin):
 	list_display = ['donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
                 'donationBarcode', 'deliveryType', 'deliveryDate']
 
+class MedInfoAdmin(admin.ModelAdmin):
+	list_display = ['med_name', 'med_subs', 'med_price']
+
 
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Med, MedAdmin)
 admin.site.register(Pharmacy, PharmacyAdmin)
 admin.site.register(Need, NeedAdmin)
 admin.site.register(Donation, DonationAdmin)
+admin.site.register(MedInfo, MedInfoAdmin)

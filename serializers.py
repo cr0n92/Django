@@ -7,8 +7,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('userName', 'userPhone', 'email', 'birthDate', 'userAddres', 'sex', 'os', 'uuid')
+        fields = ('user','userPhone', 'birthDate', 'userAddress', 'sex', 'os', 'uuid')
 
+
+
+class UserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('username', 'password',)
 
 class MedSerializer(serializers.ModelSerializer):
 
@@ -36,10 +43,12 @@ class NeedIOSerializer(serializers.ModelSerializer):
     needPharmacyName = serializers.ReadOnlyField(source='needPhone.pharmacyName')
     needPharmacyNameGen = serializers.ReadOnlyField(source='needPhone.pharmacyNameGen')
     needPharmacyGPSy = serializers.ReadOnlyField(source='needPhone.gps_y')
+    needPhone = serializers.ReadOnlyField(source='needPhone.pharmacyPhone')
+
 
     class Meta:
         model = Need
-        fields = ('needMedName','needPharmacyName','needPharmacyNameGen','needPharmacyGPSx', 'needPharmacyGPSy',)
+        fields = ('needMedName','needPharmacyName','needPharmacyNameGen','needPharmacyGPSx', 'needPharmacyGPSy','needPhone')
 
 
 class ReturnNeedsSerializer(serializers.ModelSerializer):
@@ -51,19 +60,14 @@ class ReturnNeedsSerializer(serializers.ModelSerializer):
         fields = ('id','needMedName', 'needPhone', 'needAddress')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = User
-        fields = ('username', 'password',)
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+'''class UserProfileSerializer(serializers.ModelSerializer):
     #user_id = serializers.SerializerMethodField('is_named_bar')
 
     class Meta:
         model = UserProfile
-        fields = ('userPhone','user')
+        fields = ('userPhone','user')'''
 
 class UserRegSerializer(serializers.ModelSerializer):
     
@@ -104,10 +108,3 @@ class DonationSerializer(serializers.ModelSerializer):
         model = Donation
         fields = ('donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
                 'donationBarcode', 'deliveryType', 'deliveryDate')
-
-
-class MedInfoSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = MedInfo
-        fields = ('med_name', 'med_subs', 'med_price')

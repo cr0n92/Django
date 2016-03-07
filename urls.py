@@ -11,6 +11,10 @@ urlpatterns = [
 	url(r'^med/$', views.MedList.as_view()),
 	url(r'^needs/$', views.NeedsList.as_view()),
 	url(r'^reg/$', views.user_register),
+	url(r'^verify/$', views.otp_verify),
+	url(r'^ios-needs/$', views.NeedsListIOS.as_view()),
+
+
 
 
 

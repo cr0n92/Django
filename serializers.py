@@ -7,7 +7,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('userName', 'userPhone', 'email', 'birthDate', 'userAddres', 'sex')
+        fields = ('userName', 'userPhone', 'email', 'birthDate', 'userAddres', 'sex', 'os', 'uuid')
 
 
 class MedSerializer(serializers.ModelSerializer):
@@ -31,6 +31,16 @@ class NeedSerializer(serializers.ModelSerializer):
         model = Need
         fields = ('needDate', 'needPhone', 'needMedName', 'substance', 'quantity', 'needNotes')
 
+class NeedIOSerializer(serializers.ModelSerializer):
+    needPharmacyGPSx = serializers.ReadOnlyField(source='needPhone.gps_x')
+    needPharmacyName = serializers.ReadOnlyField(source='needPhone.pharmacyName')
+    needPharmacyNameGen = serializers.ReadOnlyField(source='needPhone.pharmacyNameGen')
+    needPharmacyGPSy = serializers.ReadOnlyField(source='needPhone.gps_y')
+
+    class Meta:
+        model = Need
+        fields = ('needMedName','needPharmacyName','needPharmacyNameGen','needPharmacyGPSx', 'needPharmacyGPSy',)
+
 
 class ReturnNeedsSerializer(serializers.ModelSerializer):
     needAddress = serializers.ReadOnlyField(source='needPhone.pharmacyAddress')
@@ -41,19 +51,25 @@ class ReturnNeedsSerializer(serializers.ModelSerializer):
         fields = ('id','needMedName', 'needPhone', 'needAddress')
 
 
-class RegisterSerializer1(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
         fields = ('username', 'password',)
 
 
-class RegisterSerializer2(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     #user_id = serializers.SerializerMethodField('is_named_bar')
 
     class Meta:
         model = UserProfile
         fields = ('userPhone','user')
+
+class UserRegSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserReg
+        fields = ('useras', 'otp', )
 
 # class RegisterSerializer2(serializers.Serializer):
 #     user = models.OneToOneField(User,on_delete=models.CASCADE)

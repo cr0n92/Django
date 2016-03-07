@@ -4,22 +4,44 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE) #otan diagrafei enas Auth User
+    				#diagrafetai to UserProfile alla oxi to antistrofo
     userPhone = models.CharField(primary_key=True, max_length=10)
     birthDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
     userAddress = models.CharField(max_length=100, default='')
-    SEX_CHOISES = (
+    SEX_CHOICES = (
     	('M', 'Male'),
     	('F', 'Female'),
     )
-    sex = models.CharField(max_length=1, choices=SEX_CHOISES , default='M') #na valoume choices
-
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES , default='M') #na valoume choices
+    OS_CHOICES = (
+    	('A', 'Android'),
+    	('I', 'IOS'),
+    )
+    os = models.CharField(max_length=1, choices=OS_CHOICES , default='A') 
+    uuid = models.CharField(max_length=100, default='')
     class Meta:
     	verbose_name_plural = 'UserProfiles'
         ordering = ('userPhone', )#ordering me vash to username
 
     def __unicode__(self):
         return self.userPhone
+
+
+class UserReg(models.Model):
+    useras = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=4)
+    active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+   
+
+
+    class Meta:
+        ordering = ('otp', )
+        
+
+    def __unicode__(self):
+        return self.otp
 
 
 class Med(models.Model):
@@ -42,6 +64,9 @@ class Med(models.Model):
 class Pharmacy(models.Model):
 	pharmacyPhone = models.CharField(primary_key=True, max_length=10, default='')
 	pharmacyName = models.CharField(max_length=100)
+	pharmacyNameGen = models.CharField(max_length=100)
+	gps_x = models.FloatField()
+	gps_y = models.FloatField()
 	region = models.CharField(max_length=100)
 	pharmacyAddress = models.CharField(max_length=100)
 	description = models.TextField(max_length=500, blank=True, default='')

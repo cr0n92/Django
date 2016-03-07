@@ -122,3 +122,16 @@ class Donation(models.Model):
 
 	def __unicode__(self):
 		return u'%s %s %s %s' % (self.donatorPhone, self.donatedPhone, self.donationBarcode, self.donationId)
+
+
+class MedInfo(models.Model):
+	med_name = models.CharField(primary_key=True, max_length=150)
+	med_subs = models.CharField(max_length=100)
+	med_price = models.FloatField()
+
+	class Meta:
+		verbose_name_plural = 'MedsInfo'
+		ordering = ('med_name', )
+
+	def __unicode__(self):
+		return u'%s %s %s' % (self.med_name, self.med_subs, self.med_price)

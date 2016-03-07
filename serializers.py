@@ -7,7 +7,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('userName', 'userPhone', 'email', 'birthDate', 'userAddres', 'sex')
+        fields = ('userName', 'userPhone', 'email', 'birthDate', 'userAddres', 'sex', 'os', 'uuid')
 
 
 class MedSerializer(serializers.ModelSerializer):
@@ -31,6 +31,16 @@ class NeedSerializer(serializers.ModelSerializer):
         model = Need
         fields = ('needDate', 'needPhone', 'needMedName', 'substance', 'quantity', 'needNotes')
 
+class NeedIOSerializer(serializers.ModelSerializer):
+    needPharmacyGPSx = serializers.ReadOnlyField(source='needPhone.gps_x')
+    needPharmacyName = serializers.ReadOnlyField(source='needPhone.pharmacyName')
+    needPharmacyNameGen = serializers.ReadOnlyField(source='needPhone.pharmacyNameGen')
+    needPharmacyGPSy = serializers.ReadOnlyField(source='needPhone.gps_y')
+
+    class Meta:
+        model = Need
+        fields = ('needMedName','needPharmacyName','needPharmacyNameGen','needPharmacyGPSx', 'needPharmacyGPSy',)
+
 
 class ReturnNeedsSerializer(serializers.ModelSerializer):
     needAddress = serializers.ReadOnlyField(source='needPhone.pharmacyAddress')
@@ -41,18 +51,51 @@ class ReturnNeedsSerializer(serializers.ModelSerializer):
         fields = ('id','needMedName', 'needPhone', 'needAddress')
 
 
-class RegisterSerializer1(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
         fields = ('username', 'password',)
 
 
-class RegisterSerializer2(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+    #user_id = serializers.SerializerMethodField('is_named_bar')
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'userPhone', 'birthDate', 'userAddress', 'sex')
+        fields = ('userPhone','user')
+
+class UserRegSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserReg
+        fields = ('useras', 'otp', )
+
+# class RegisterSerializer2(serializers.Serializer):
+#     user = models.OneToOneField(User,on_delete=models.CASCADE)
+#     userPhone = models.CharField(primary_key=True, max_length=10)
+#     birthDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
+#     userAddress = models.CharField(max_length=100, default='')
+    
+
+#     def create(self, validated_data):
+#         """
+#         Create and return a new `Snippet` instance, given the validated data.
+#         """
+#         return Snippet.objects.create(**validated_data)
+
+#     def update(self, instance, validated_data):
+#         """
+#         Update and return an existing `Snippet` instance, given the validated data.
+#         """
+#         instance.title = validated_data.get('title', instance.title)
+#         instance.code = validated_data.get('code', instance.code)
+#         instance.linenos = validated_data.get('linenos', instance.linenos)
+#         instance.language = validated_data.get('language', instance.language)
+#         instance.style = validated_data.get('style', instance.style)
+#         instance.save()
+#         return instance
+    
 
 
 class DonationSerializer(serializers.ModelSerializer):

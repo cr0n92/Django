@@ -17,6 +17,9 @@ class PharmacyAdmin(admin.ModelAdmin):
 class NeedAdmin(admin.ModelAdmin):
 	list_display = ['needDate', 'needPhone', 'needMedName', 'substance', 'quantity', 'needNotes']
 
+class UserRegAdmin(admin.ModelAdmin):
+	list_display = ['useras','otp','active']
+
 class DonationAdmin(admin.ModelAdmin):
 	list_display = ['donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
                 'donationBarcode', 'deliveryType', 'deliveryDate']
@@ -31,3 +34,4 @@ admin.site.register(Pharmacy, PharmacyAdmin)
 admin.site.register(Need, NeedAdmin)
 admin.site.register(Donation, DonationAdmin)
 admin.site.register(MedInfo, MedInfoAdmin)
+admin.site.register(UserReg, UserRegAdmin)

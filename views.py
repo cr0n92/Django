@@ -30,14 +30,14 @@ def send_sms(phone,otp):
 	
 
 
-@api_view(['POST',])
+@api_view(['POST','GET'])
 def user_register(request):
     """
     Register a new user.
     """
     if request.method == 'POST':
         n1 = request.data.copy()
-
+        n1['password'] = 123
         serializer = UserSerializer(data=n1)
         if serializer.is_valid():
             a = serializer.save()
@@ -59,6 +59,34 @@ def user_register(request):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserDetail(APIView):
+    """
+    Retrieve, update or delete a snippet instance.
+    """
+    def get_object(self, userPhone):
+        try:
+            return UserProfile.objects.get(userPhone=userPhone)
+        except UserProfile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, userPhone, format=None):
+        user = self.get_object(userPhone)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
+
+    '''def put(self, request, barcode, format=None):
+        medi = self.get_object(barcode)
+        serializer = MedSerializer(medi, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, barcode, format=None):
+        medi = self.get_object(barcode)
+        medi.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)'''
 
 
 
@@ -135,22 +163,23 @@ def med_detail(request, phone):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserDetail(APIView):
+
+class PharmacyDetail(APIView):
     """
     Retrieve, update or delete a snippet instance.
     """
-    def get_object(self, userPhone):
+    def get_object(self, pharmacyPhone):
         try:
-            return UserProfile.objects.get(userPhone=userPhone)
-        except UserProfile.DoesNotExist:
+            return Pharmacy.objects.get(pharmacyPhone=pharmacyPhone)
+        except Pharmacy.DoesNotExist:
             raise Http404
 
-    def get(self, request, userPhone, format=None):
-        user = self.get_object(userPhone)
-        serializer = MedSerializer(user)
+    def get(self, request, pharmacyPhone, format=None):
+        pharmacy = self.get_object(pharmacyPhone)
+        serializer = PharmacySerializer(pharmacy)
         return Response(serializer.data)
 
-    def put(self, request, barcode, format=None):
+    '''def put(self, request, barcode, format=None):
         medi = self.get_object(barcode)
         serializer = MedSerializer(medi, data=request.data)
         if serializer.is_valid():
@@ -161,7 +190,7 @@ class UserDetail(APIView):
     def delete(self, request, barcode, format=None):
         medi = self.get_object(barcode)
         medi.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)     '''   
 
 class NeedsList(APIView):
     """

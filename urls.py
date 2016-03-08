@@ -6,9 +6,9 @@ from rest_framework import serializers
 
 urlpatterns = [
 	#url(r'^userades/$', views.users_list),
-	#url(r'^med/$', views.med_list),
 	#url(r'^info/$', views.info_list),
-	url(r'^med/$', views.MedList.as_view()),
+	url(r'^med_delete/(?P<barcode>[0-9]+)/$', views.med_del),
+	url(r'^med/(?P<phone>[0-9]+)/$', views.med_detail),
 	url(r'^needs/$', views.NeedsList.as_view()),
 	url(r'^reg/$', views.user_register),
 	url(r'^verify/$', views.otp_verify),

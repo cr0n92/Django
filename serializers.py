@@ -20,7 +20,7 @@ class MedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Med
-        fields = ('barcode', 'medName', 'expirationDate', 'medPhone', 'boxes', 'postedDate')
+        fields = ('barcode', 'eofcode', 'medName', 'expirationDate', 'medPhone', 'notes', 'state', 'forDonation')
 
 
 class PharmacySerializer(serializers.ModelSerializer):
@@ -36,6 +36,7 @@ class NeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Need
         fields = ('needDate', 'needPhone', 'needMedName', 'substance', 'quantity', 'needNotes')
+
 
 class NeedIOSerializer(serializers.ModelSerializer):
     needPharmacyGPSx = serializers.ReadOnlyField(source='needPhone.gps_x')

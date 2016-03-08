@@ -28,9 +28,9 @@ def send_sms(phone,otp):
 	urllib2.urlopen("https://rest.nexmo.com/sms/json?api_key=fea55ff0&api_secret=aabaffcc&to=30"+phone+"&from=GivMed&text=Hello+from+GivMed.Your+code+is+%3A"+otp).read()
 
 	
+#http://stackoverflow.com/questions/630453/put-vs-post-in-rest/2590281#2590281
 
-
-@api_view(['POST','GET'])
+@api_view(['POST'])
 def user_register(request):
     """
     Register a new user.
@@ -59,6 +59,38 @@ def user_register(request):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PUT'])
+def update_user(request):
+    """
+    Update a user.
+    """
+    if request.method == 'PUT':
+        try:
+            user = UserProfile.objects.get(userPhone=userPhone)
+        except UserProfile.DoesNotExist:
+            raise Http404    	
+        n1 = request.data.copy()
+        n1['password'] = '123'
+        serializer = UserSerializer(data=n1)
+        if serializer.is_valid():
+            a = serializer.save()
+
+            n1['user'] = a.id
+            serializer = UserProfileSerializer(data=n1)
+            if serializer.is_valid():
+                b=serializer.save()
+                #otp = otp_maker() 
+                #send_sms(b.userPhone,otp)
+                #n1['otp'] = otp
+                #n1['useras'] = a.id
+                #serializer = UserRegSerializer(data=n1)
+                #if serializer.is_valid(raise_exception=True):
+                	#c=serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                a.delete()
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetail(APIView):
     """
@@ -75,15 +107,30 @@ class UserDetail(APIView):
         serializer = UserProfileSerializer(user)
         return Response(serializer.data)
 
-    '''def put(self, request, barcode, format=None):
-        medi = self.get_object(barcode)
-        serializer = MedSerializer(medi, data=request.data)
+    def put(self, request, userPhone, format=None):
+        a = self.get_object(userPhone)
+        print a
+        b = a.user
+        n1 = request.data.copy()
+        #n1['user'] = b.id
+        print b.username
+        #request.data['password'] = '123'
+        serializer = UserProfileSerializer(a, data=n1,partial=True)
         if serializer.is_valid():
-            serializer.save()
+            print 'lolita'
+            c= serializer.save()
+            n1['user'] = c.id
+          #   for field in a._meta.fields:
+    		    # print field
+            serializer = UserProfileSerializer(a, data=n1)
+            if serializer.is_valid():
+            	print 'karioka'
+                serializer.save()
+                print a.userAddress
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, barcode, format=None):
+    '''def delete(self, request, barcode, format=None):
         medi = self.get_object(barcode)
         medi.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)'''
@@ -133,6 +180,7 @@ class MedList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class MedDetail(APIView):
     """
     Retrieve, update or delete a snippet instance.
@@ -160,7 +208,7 @@ class MedDetail(APIView):
         medi = self.get_object(barcode)
         medi.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
 
 class PharmacyDetail(APIView):
     """

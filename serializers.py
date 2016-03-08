@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserProfile
         fields = ('user','userPhone', 'birthDate', 'userAddress', 'sex', 'os', 'uuid')
@@ -15,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('username', 'password',)
+        fields = ('username', 'password','email')
 
 class MedSerializer(serializers.ModelSerializer):
 

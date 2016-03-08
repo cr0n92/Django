@@ -8,7 +8,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 	list_display = ['userPhone', 'sex', 'birthDate']
 
 class MedAdmin(admin.ModelAdmin):
-	list_display = ['barcode', 'medPhone', 'medName', 'postedDate', 'boxes']
+	list_display = ['barcode', 'eofcode', 'medPhone', 'medName', 'postedDate', 'notes', 'state', 'forDonation']
 	
 class PharmacyAdmin(admin.ModelAdmin):
 	list_display = ['pharmacyPhone', 'pharmacyName', 'region', 'pharmacyAddress', 

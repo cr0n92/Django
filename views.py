@@ -82,56 +82,57 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-class MedList(APIView):
-    """
-    List all snippets, or create a new snippet.
 
+@api_view(['DELETE',])
+def med_del(request, barcode):
     """
-    authentication_classes = ( TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    Delete a med.
+    """
+    #authentication_classes = ( TokenAuthentication,)
+    #permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
-    	print request.user
-    	print request.auth
-        medis = Med.objects.all()
+    if request.method == 'DELETE':
+        medi = Med.objects.get(barcode=barcode)
+        medi.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+@api_view(['POST', 'PUT', 'GET',])
+def med_detail(request, phone):
+    """
+    Insert, update or fetch a med instance.
+    """
+
+    if request.method == 'GET':
+        medis = Med.objects.filter(medPhone=phone)
         serializer = MedSerializer(medis, many=True)
         return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        req_copy = request.data.copy()
+        req_copy['medPhone'] = UserProfile.objects.get(userPhone=phone)
+        serializer = MedSerializer(data=req_copy)
 
-    def post(self, request, format=None):
-        serializer = MedSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'PUT':
+        req_copy = request.data.copy()
+        medi = Med.objects.get(barcode=request.data['barcode'])
+        med_d = MedSerializer(medi).data
+        med_d['medPhone'] = UserProfile.objects.get(userPhone=phone)
 
+        for key, value in req_copy.items():
+            med_d[key] = value
 
-class MedDetail(APIView):
-    """
-    Retrieve, update or delete a snippet instance.
-    """
-    def get_object(self, barcode):
-        try:
-            return Med.objects.get(barcode=barcode)
-        except Med.DoesNotExist:
-            raise Http404
-
-    def get(self, request, barcode, format=None):
-        medi = self.get_object(barcode)
-        serializer = MedSerializer(medi)
-        return Response(serializer.data)
-
-    def put(self, request, barcode, format=None):
-        medi = self.get_object(barcode)
-        serializer = MedSerializer(medi, data=request.data)
+        serializer = MedSerializer(medi, data=med_d)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, barcode, format=None):
-        medi = self.get_object(barcode)
-        medi.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserDetail(APIView):

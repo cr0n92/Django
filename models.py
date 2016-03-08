@@ -46,12 +46,18 @@ class UserReg(models.Model):
 
 class Med(models.Model):
     barcode = models.CharField(primary_key=True, max_length=12)
+    eofcode = models.CharField(max_length=14, default='')
     medPhone = models.ForeignKey(UserProfile, related_name='meds', default='')
     medName = models.CharField(max_length=90)
     postedDate = models.DateField(auto_now=False, auto_now_add=True, null=True)
     expirationDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
-    boxes = models.IntegerField(default=1)
-    #notes = models.TextField(max_length=140, blank=True, default='')
+    notes = models.TextField(max_length=140, blank=True, default='')
+    STATE_CHOICES = (
+    	('O', 'Open'),
+    	('C', 'Closed'),
+    )
+    state = models.CharField(max_length=1, choices=STATE_CHOICES , default='C')
+    forDonation = models.BooleanField(default=True)
 
     class Meta:
         ordering = ('medName', )
@@ -64,9 +70,9 @@ class Med(models.Model):
 class Pharmacy(models.Model):
 	pharmacyPhone = models.CharField(primary_key=True, max_length=10, default='')
 	pharmacyName = models.CharField(max_length=100)
-	pharmacyNameGen = models.CharField(max_length=100)
-	gps_x = models.FloatField()
-	gps_y = models.FloatField()
+	pharmacyNameGen = models.CharField(max_length=100, default='')
+	gps_x = models.FloatField(default=0)
+	gps_y = models.FloatField(default=0)
 	region = models.CharField(max_length=100)
 	pharmacyAddress = models.CharField(max_length=100)
 	description = models.TextField(max_length=500, blank=True, default='')

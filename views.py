@@ -109,12 +109,48 @@ class UserDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, userPhone, format=None):
-        a = self.get_object(userPhone)
-        print a
+        '''req_copy = request.data.copy()
+        medi = Med.objects.get(barcode=request.data['barcode'])
+        med_d = MedSerializer(medi).data
+        med_d['medPhone'] = UserProfile.objects.get(userPhone=phone)
+
+        for key, value in req_copy.items():
+            med_d[key] = value
+
+        serializer = MedSerializer(medi, data=med_d)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    	------------------------------------------------------------'''
+
+        n1 = request.data.copy()
+        userP = UserProfile.objects.get(userPhone=userPhone)
+        user = userP.user
+        user_d = UserSerializer(user).data
+        for key, value in n1.items():
+            user_d[key] = value
+        serializer = UserSerializer(user, data=user_d)
+        if serializer.is_valid():
+            serializer.save()
+            userP_d = UserProfileSerializer(userP).data
+            for key, value in n1.items():
+                userP_d[key] = value
+
+            
+            serializer = UserProfileSerializer(userP, data=userP_d)
+            if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        '''a = self.get_object(userPhone)
         b = a.user
         n1 = request.data.copy()
         #n1['user'] = b.id
-        print b.username
         #request.data['password'] = '123'
         serializer = UserProfileSerializer(a, data=n1,partial=True)
         if serializer.is_valid():
@@ -129,7 +165,7 @@ class UserDetail(APIView):
                 serializer.save()
                 print a.userAddress
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)'''
 
     '''def delete(self, request, barcode, format=None):
         medi = self.get_object(barcode)

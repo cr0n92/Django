@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     				#diagrafetai to UserProfile alla oxi to antistrofo
     userPhone = models.CharField(primary_key=True, max_length=10)
     birthDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
-    userAddress = models.CharField(max_length=100, default='')
+    #userAddress = models.CharField(max_length=100, default='')
     SEX_CHOICES = (
     	('M', 'Male'),
     	('F', 'Female'),

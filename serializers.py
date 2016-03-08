@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('user','userPhone', 'birthDate', 'userAddress', 'sex', 'os', 'uuid')
+        fields = ('user','userPhone', 'birthDate', 'sex', 'os', 'uuid')
 
 
 

@@ -8,11 +8,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 	list_display = ['userPhone', 'sex', 'birthDate']
 
 class MedAdmin(admin.ModelAdmin):
-	list_display = ['barcode', 'eofcode', 'medPhone', 'medName', 'postedDate', 'notes', 'state', 'forDonation']
+	list_display = ['barcode', 'eofcode', 'medPhone', 'postedDate', 'notes', 'state', 'forDonation']
 	
 class PharmacyAdmin(admin.ModelAdmin):
 	list_display = ['pharmacyPhone', 'pharmacyName', 'region', 'pharmacyAddress', 
-                'description', 'website', 'supervisor', 'supervisorMail', 'userName', 'passWord']
+                	'description', 'website', 'supervisor', 'supervisorMail']
 
 class NeedAdmin(admin.ModelAdmin):
 	list_display = ['needDate', 'needPhone', 'needMedName', 'substance', 'quantity', 'needNotes']
@@ -22,10 +22,10 @@ class UserRegAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
 	list_display = ['donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
-                'donationBarcode', 'deliveryType', 'deliveryDate']
+                	'donationBarcode', 'deliveryType', 'deliveryDate']
 
 class MedInfoAdmin(admin.ModelAdmin):
-	list_display = ['med_name', 'med_subs', 'med_price']
+	list_display = ['medEof', 'medName', 'medSubs', 'medCateg', 'medPrice']
 
 
 admin.site.register(UserProfile, UserProfileAdmin)

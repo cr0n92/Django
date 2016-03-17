@@ -225,9 +225,9 @@ def med_detail(request, phone):
     elif request.method == 'POST':
         req_copy = request.data.copy()
         req_copy['medPhone'] = UserProfile.objects.get(userPhone=phone)
+        req_copy['eofcode'] = MedInfo.objects.get(medEof=request.data['eofcode'])
         serializer = MedSerializer(data=req_copy)
 
-    
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

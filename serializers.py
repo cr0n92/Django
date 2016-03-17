@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = UserProfile
         fields = ('user','userPhone', 'birthDate', 'sex', 'os', 'uuid')
-
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,11 +16,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password','email')
 
+
 class MedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Med
-        fields = ('barcode', 'eofcode', 'medName', 'expirationDate', 'medPhone', 'notes', 'state', 'forDonation')
+        fields = ('barcode', 'eofcode', 'expirationDate', 'medPhone', 'notes', 'state', 'forDonation')
 
 
 class PharmacySerializer(serializers.ModelSerializer):
@@ -28,7 +29,7 @@ class PharmacySerializer(serializers.ModelSerializer):
     class Meta:
         model = Pharmacy
         fields = ('pharmacyPhone', 'pharmacyName', 'region', 'pharmacyAddress', 
-                'description', 'website', 'supervisor', 'supervisorMail', 'userName', 'passWord')
+                'description', 'website', 'supervisor', 'supervisorMail')
 
 
 class NeedSerializer(serializers.ModelSerializer):
@@ -60,8 +61,6 @@ class ReturnNeedsSerializer(serializers.ModelSerializer):
         fields = ('id','needMedName', 'needPhone', 'needAddress')
 
 
-
-
 '''class UserProfileSerializer(serializers.ModelSerializer):
     #user_id = serializers.SerializerMethodField('is_named_bar')
 
@@ -69,11 +68,13 @@ class ReturnNeedsSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ('userPhone','user')'''
 
+
 class UserRegSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserReg
         fields = ('useras', 'otp', )
+
 
 # class RegisterSerializer2(serializers.Serializer):
 #     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -101,10 +102,16 @@ class UserRegSerializer(serializers.ModelSerializer):
 #         return instance
     
 
-
 class DonationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Donation
         fields = ('donationDate', 'donatorPhone', 'donatedPhone', 'donationId', 
                 'donationBarcode', 'deliveryType', 'deliveryDate')
+
+
+class MedInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MedInfo
+        fields = ('medEof', 'medName', 'medSubs', 'medCateg', 'medPrice')

@@ -1,12 +1,47 @@
-# pip install openpyxl
-from openpyxl import load_workbook
+import xlrd
 from givmed.models import MedInfo
 
-wb = load_workbook(filename='/home/awe/farmaka.xlsx', read_only=True)
-ws = wb['Meds'] # ws is now an IterableWorksheet
+# vazoume ton kwdiko (280...), to onoma, thn drastikh ousia kai thn palia timh, 
+# h 8erapautikh kathgoria menei kenh
+workbook = xlrd.open_workbook(filename='/home/awe/GIVMED/ono_barc_drast_17-07-2015.xlsx')
+worksheet = workbook.sheet_by_name('Meds')
 
-meds = iter(ws.rows)
-next(meds)
+for i in xrange(1, worksheet._dimnrows):
+	eof = unicode(worksheet.cell(i, 1).value)
+	name = unicode(worksheet.cell(i, 2).value)
+	subs = unicode(worksheet.cell(i, 4).value)
+	price = unicode(worksheet.cell(i, 11).value)
 
-for row in meds:
-	MedInfo(med_name = str(row[0].value), med_subs = str(row[1].value), med_price = float(row[4].value)).save()
+	MedInfo(medEof = eof, medName = name, medSubs = subs, medPrice = price).save()
+
+
+print "Added %d new meds." % (rows)
+
+# apo to kainourgio excel ananewnoume tis times kai an kapoios kwdikos
+# den yparxei ton topo8etoume
+workbook = xlrd.open_workbook(filename='/home/awe/GIVMED/ono_barc_timh_31-12-2015.xlsx')
+worksheet = workbook.sheet_by_name('Meds')
+
+newMeds = 0
+updMeds = 0
+
+for i in xrange(1, worksheet._dimnrows):
+	eof = unicode(worksheet.cell(i, 1).value)
+	name = unicode(worksheet.cell(i, 2).value)
+	price = unicode(worksheet.cell(i, 8).value)
+
+	# uncomment this line if the excel has a cell with substance info and 
+	# place the number of the column below (i, #column)
+	#subs = unicode(worksheet.cell(i, 4).value)
+
+	med = MedInfo.objects.filter(medEof=eof)
+
+	if not med:
+		MedInfo(medEof = eof, medName = name, medPrice = price).save()
+		newMeds += 1
+	else:
+		med[0].medPrice = price
+		med[0].save()
+		updMeds += 1
+
+print "Added %d new meds and updated %d old meds." % (newMeds, updMeds)

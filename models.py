@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     				#diagrafetai to UserProfile alla oxi to antistrofo
     userPhone = models.CharField(primary_key=True, max_length=10)
     birthDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
-    #userAddress = models.CharField(max_length=100, default='')
+    userAddress = models.CharField(max_length=100, default='')
     SEX_CHOICES = (
     	('M', 'Male'),
     	('F', 'Female'),
@@ -20,6 +20,8 @@ class UserProfile(models.Model):
     )
     os = models.CharField(max_length=1, choices=OS_CHOICES , default='A') 
     uuid = models.CharField(max_length=100, default='')
+
+
     class Meta:
     	verbose_name_plural = 'UserProfiles'
         ordering = ('userPhone', )#ordering me vash to username
@@ -35,20 +37,34 @@ class UserReg(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
    
 
-
     class Meta:
+    	verbose_name_plural = 'UserRegs'
         ordering = ('otp', )
         
-
     def __unicode__(self):
         return self.otp
 
 
+class MedInfo(models.Model):
+	medEof = models.CharField(primary_key=True, max_length=13, default='')
+	medName = models.TextField(max_length=600)
+	medSubs = models.CharField(max_length=200, default='')
+	medPrice = models.FloatField(default=0)
+	medCateg = models.CharField(max_length=200, default='')
+
+
+	class Meta:
+		verbose_name_plural = 'MedsInfo'
+		ordering = ('medName', )
+
+	def __unicode__(self):
+		return self.medEof
+
+
 class Med(models.Model):
     barcode = models.CharField(primary_key=True, max_length=12)
-    eofcode = models.CharField(max_length=14, default='')
+    eofcode = models.ForeignKey(MedInfo, related_name='info', default='')
     medPhone = models.ForeignKey(UserProfile, related_name='meds', default='')
-    medName = models.CharField(max_length=90)
     postedDate = models.DateField(auto_now=False, auto_now_add=True, null=True)
     expirationDate = models.DateField(auto_now=False, auto_now_add=False, null=True)
     notes = models.TextField(max_length=140, blank=True, default='')
@@ -59,8 +75,9 @@ class Med(models.Model):
     state = models.CharField(max_length=1, choices=STATE_CHOICES , default='C')
     forDonation = models.BooleanField(default=True)
 
+
     class Meta:
-        ordering = ('medName', )
+        ordering = ('postedDate', )
         unique_together = ('medPhone', 'barcode')
 
     def __unicode__(self):
@@ -68,6 +85,7 @@ class Med(models.Model):
 
 
 class Pharmacy(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	pharmacyPhone = models.CharField(primary_key=True, max_length=10, default='')
 	pharmacyName = models.CharField(max_length=100)
 	pharmacyNameGen = models.CharField(max_length=100, default='')
@@ -79,10 +97,9 @@ class Pharmacy(models.Model):
 	website = models.URLField(max_length=250, blank=True, default='')
 	supervisor = models.CharField(max_length=50)
 	supervisorMail = models.EmailField(max_length=254, blank=True, default='')
-	userName = models.CharField(max_length=100)
-	passWord = models.CharField(max_length=100)
 	# openTime
 	# howToGoThere
+
 
 	class Meta:
 		verbose_name_plural = 'Pharmacies'
@@ -95,10 +112,11 @@ class Pharmacy(models.Model):
 class Need(models.Model):
 	needDate = models.DateField(auto_now=False, auto_now_add=True)
 	needPhone = models.ForeignKey(Pharmacy, related_name='nPhone')
-	needMedName = models.CharField(max_length=100, blank=True, default='') #merikes fores onoma merikes drastikh ousia
-	substance = models.CharField(max_length=100, blank=True, default='')
+	needMedName = models.CharField(max_length=200, blank=True, default='') #merikes fores onoma merikes drastikh ousia
+	substance = models.CharField(max_length=200, blank=True, default='')
 	quantity = models.IntegerField(blank=True, default=0) #proeraitiko
 	needNotes = models.TextField(max_length=500, blank=True, default='')
+
 
 	class Meta:
 		verbose_name_plural = 'Needs'
@@ -121,6 +139,7 @@ class Donation(models.Model):
 	deliveryType = models.BooleanField(max_length=1, choices=DELIVERAS, default='U') #dwrhths h ethelodhs
 	deliveryDate = models.DateField(auto_now=False, auto_now_add=False)
 
+
 	class Meta:
 		verbose_name_plural = 'Donations'
 		ordering = ('deliveryDate', )
@@ -128,16 +147,3 @@ class Donation(models.Model):
 
 	def __unicode__(self):
 		return u'%s %s %s %s' % (self.donatorPhone, self.donatedPhone, self.donationBarcode, self.donationId)
-
-
-class MedInfo(models.Model):
-	med_name = models.CharField(primary_key=True, max_length=150)
-	med_subs = models.CharField(max_length=100)
-	med_price = models.FloatField()
-
-	class Meta:
-		verbose_name_plural = 'MedsInfo'
-		ordering = ('med_name', )
-
-	def __unicode__(self):
-		return u'%s %s %s' % (self.med_name, self.med_subs, self.med_price)

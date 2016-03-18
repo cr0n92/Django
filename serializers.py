@@ -18,10 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MedSerializer(serializers.ModelSerializer):
+    medName = serializers.ReadOnlyField(source='eofcode.medName')
+    medPrice = serializers.ReadOnlyField(source='eofcode.medPrice')
 
     class Meta:
         model = Med
-        fields = ('barcode', 'eofcode', 'expirationDate', 'medPhone', 'notes', 'state', 'forDonation')
+        fields = ('barcode', 'eofcode', 'expirationDate', 'medPhone', 'notes', 'state', 'forDonation',
+                    'medName', 'medPrice')
 
 
 class PharmacySerializer(serializers.ModelSerializer):

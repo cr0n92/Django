@@ -15,7 +15,7 @@ for i in xrange(1, worksheet._dimnrows):
 	MedInfo(medEof = eof, medName = name, medSubs = subs, medPrice = price).save()
 
 
-print "Added %d new meds." % (rows)
+print "Added %d new meds." % (worksheet._dimnrows)
 
 # apo to kainourgio excel ananewnoume tis times kai an kapoios kwdikos
 # den yparxei ton topo8etoume

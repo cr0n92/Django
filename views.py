@@ -18,6 +18,32 @@ from rest_framework.decorators import api_view
 import urllib2
 import random
 
+
+# prepei na valoume mia grammh gia to localhost opws apo katw
+# 127.0.0.1   piotr-probook.localdomain piotr-probook localdev localhost 
+# sto /etc/hosts gia na einai pio grhgoro giati alliws argei gamhse ta
+def send_email(name, code):
+    SENDMAIL = "/usr/sbin/sendmail" # sendmail location
+
+    FROM = "givmedgr@gmail.com"
+    TO = "hello@givmed.com"
+
+    SUBJECT = "[SERVER] A new medicine has been found!"
+
+    TEXT = "A new medicine named \' %s \' with eofcode \' %s \' has been added to our database. Please fill the missing info." % (name, code)
+
+    # Prepare actual message
+
+    message = "From: %s\nTo: %s\nSubject: %s\n\n%s" % (FROM, TO, SUBJECT, TEXT)
+
+    # Send the mail
+    import os
+
+    p = os.popen("%s -t -i" % SENDMAIL, "w")
+    p.write(message)
+    status = p.close()
+    
+
 #edw mporw na kanw ena query mesa se ena while gia to an uparxei mh active xrhsths me idio otp
 #opote sunexizw na paragw otp
 def otp_maker():
@@ -60,6 +86,8 @@ def user_register(request):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
 @api_view(['PUT'])
 def update_user(request):
     """
@@ -92,6 +120,8 @@ def update_user(request):
                 a.delete()
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class UserDetail(APIView):
     """
@@ -196,6 +226,58 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 
+@api_view(['POST', 'PUT', 'GET',])
+def med_check(request, phone):
+    """
+    Insert, update or fetch a med instance.
+    """
+
+    if request.method == 'GET':
+        medis = Med.objects.filter(medPhone=phone)
+        serializer = MedSerializer(medis, many=True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        req_copy = request.data.copy()
+        req_copy['medPhone'] = UserProfile.objects.get(userPhone=phone)
+
+        medi = Med.objects.filter(barcode=request.data['barcode'])
+        if medi:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        eof = req_copy['eofcode']
+        medf = MedInfo.objects.filter(medEof=eof)
+        if not medf:
+            medo = MedInfo(medEof=eof, medName=req_copy['name'])
+            medo.save()
+            send_email(req_copy['name'], eof)
+        else:
+            medo = medf[0]
+        req_copy['eofcode'] = medo
+
+        serializer = MedSerializer(data=req_copy)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'PUT':
+        req_copy = request.data.copy()
+        medi = Med.objects.get(barcode=request.data['barcode'])
+        med_d = MedSerializer(medi).data
+        med_d['medPhone'] = UserProfile.objects.get(userPhone=phone)
+
+        for key, value in req_copy.items():
+            med_d[key] = value
+
+        serializer = MedSerializer(medi, data=med_d)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['DELETE',])
 def med_del(request, barcode):
     """
@@ -248,8 +330,8 @@ def med_detail(request, phone):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        
 
+        
 class PharmacyDetail(APIView):
     """
     Retrieve, update or delete a snippet instance.
@@ -278,6 +360,8 @@ class PharmacyDetail(APIView):
         medi.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)     '''   
 
+
+
 class NeedsList(APIView):
     """
     List all snippets, or create a new snippet.
@@ -294,6 +378,8 @@ class NeedsList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
 class NeedsListIOS(APIView):
     """
     Dinei lista me ola ta Needs opws ta theloun oi IOS
@@ -302,5 +388,3 @@ class NeedsListIOS(APIView):
         need = Need.objects.all()
         serializer = NeedIOSerializer(need, many=True)
         return Response(serializer.data)
-
-    

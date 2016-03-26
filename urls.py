@@ -8,6 +8,7 @@ urlpatterns = [
 	#url(r'^userades/$', views.users_list),
 	#url(r'^info/$', views.info_list),
 	url(r'^med_delete/(?P<barcode>[0-9]+)/$', views.med_del),
+	url(r'^med_check/(?P<phone>[0-9]+)/$', views.med_check),
 	url(r'^med/(?P<phone>[0-9]+)/$', views.med_detail),
 	url(r'^needs/$', views.NeedsList.as_view()),
 	url(r'^reg/$', views.user_register),
